@@ -1,100 +1,235 @@
 const calculationScreen = document.getElementById('calculation');
 const resultScreen = document.getElementById('result');
-//const powerOfBtn = document.getElementById('power_of');
-//const factorialBtn = document.getElementById('factorial');
-//const clearBtn = document.getElementById('clear');
-//const deleteBtn = document.getElementById('delete');
-//const number_0_Btn = document.getElementById('number_0');
-//const number_1_Btn = document.getElementById('number_1');
-//const number_2_Btn = document.getElementById('number_2');
-//const number_3_Btn = document.getElementById('number_3');
-//const number_4_Btn = document.getElementById('number_4');
-//const number_5_Btn = document.getElementById('number_5');
-//const number_6_Btn = document.getElementById('number_6');
-//const number_7_Btn = document.getElementById('number_7');
-//const number_8_Btn = document.getElementById('number_8');
-//const number_9_Btn = document.getElementById('number_9');
-//const divideBtn = document.getElementById('divide');
-//const multiplyBtn = document.getElementById('multiply');
-//const minusBtn = document.getElementById('minus');
-//const plusBtn = document.getElementById('plus');
-//const dotBtn = document.getElementById('dot');
-//const equalsBtn = document.getElementById('equals');
-
 const allButtons = Array.from(document.querySelectorAll('#buttons button'));
-
-let operatorMode = '';
-let currentOperator = '';
-let num1 = '';
-let num2 = '';
+let num1;
+let num2;
 let result;
+let operator;
+let data;
 
-allButtons.forEach(e => {e.addEventListener('click', calculate)});
+allButtons.forEach(e => {e.addEventListener('mousedown', collectData)});
 
-function defaultState() {
-    calculationScreen.textContent = '';
-    resultScreen.textContent = '0';
-    operatorMode = 'OFF'
-};
-
-defaultState();
-
-function calculate(e) {
-    const content = e.target.textContent;
-    if (e.target.classList.contains('number')) {
-        if (operatorMode === 'OFF') {
-            num1 += e.target.textContent;
-            calculationScreen.textContent += content;
-        } else {
-            num2 += e.target.textContent;
-            calculationScreen.textContent += content;
-        };
-    };
-
-    if (content === '+') {
-        if (currentOperator != 'sumUp' && ) {
-            operatorMode = 'ON';
-            currentOperator = 'sumUp'
-            calculationScreen.textContent += ' ' + content + ' ';
-        } else console.log('You already chose it, you perky bastard!');
-    };
-
-    if (content === '-') {
-        if (currentOperator != 'substract') {
-            operatorMode = 'ON';
-            currentOperator = 'substract'
-            calculationScreen.textContent += ' ' + content + ' ';
-        } else console.log('You already chose it, you perky bastard!');
-    };
-
-    if (content === '=') {
-        getResult();
-        calculationScreen.textContent += ' ' + content + ' ';
-    };
-};
-
-function sumUp(num1, num2) {
-    return Number(num1) + Number(num2);
+function sum(num1, num2) {
+    return Number(num1) + Number(num2)
 };
 
 function substract(num1, num2) {
-    return Number(num1) - Number(num2);
+    return Number(num1) - Number(num2)
+};
+
+function multiply(num1, num2) {
+    return Number(num1) * Number(num2)
+};
+
+function divide(num1, num2) {
+    return Number(num1) / Number(num2)
+};
+
+function powerOf(num1, num2) {
+    return Math.pow(Number(num1), Number(num2));
+};
+
+function factorial(num1) {
+    if (num1 == '0') return '1';
+    let num = Number(num1);
+    let factorial = 1;
+    for (let i = 1; i <= num; i++) {
+        factorial *= i;
+    };
+    return factorial;
+};
+
+function collectData(e) {
+
+    data = e.target.textContent;
+
+    if (data == 'CLR') {
+        clear();
+        return;
+    };
+
+    if (data == '.') {
+        if (operator != '' && num2.includes('.') == false) {
+            if (num2 == '') num2 = '0';
+            num2 += data;
+            resultScreen.textContent = num2;
+        } else if (num1.includes('.') == false) {
+            if (num1 == '') num1 = '0';
+            num1 += data;
+            resultScreen.textContent = num1;
+        };
+    };
+
+    if (data == 'DEL') {
+        if (operator != '') {
+
+            if (num2.length >= 2) {
+                num2 = num2.substring(0, num2.length - 1);
+                resultScreen.textContent = num2;
+                return
+            } else {
+                num2 = '0';
+                resultScreen.textContent = num2;
+                return
+            };
+
+        } else {
+
+            if (num1.length >= 2) {
+                num1 = num1.substring(0, num1.length - 1);
+                resultScreen.textContent = num1;
+                return
+            } else {
+                num1 = '0';
+                resultScreen.textContent = num1;
+                return
+            };
+        };
+    };
+
+    if (e.target.classList.contains('number')) {
+        if (operator != '' && (data != '0' || num2 != '0')) {
+            if (num2 == '0') {
+                num2 = '';
+            };
+            num2 += data;
+            resultScreen.textContent = num2;
+            return
+        } else if (data != '0' || num1 != '0') {
+            if (num1 == '0') {
+                num1 = '';
+            };
+            num1 += data;
+            resultScreen.textContent = num1;
+            return
+        };
+    };
+
+    if (num1 == '') {
+        num1 = '0';
+    };
+
+    if (num2 != '' || operator == 'factorial') {
+
+        if (data == '+') {
+            getResult()
+            operator = 'sum';
+            calculationScreen.textContent = num1 + ' + ';
+            return
+        };
+
+        if (data == '-') {
+            getResult()
+            operator = 'substract';
+            calculationScreen.textContent = num1 + ' - ';
+            return
+        };
+
+        if (data == 'x') {
+            getResult()
+            operator = 'multiply';
+            calculationScreen.textContent = num1 + ' x ';
+            return
+        };
+
+        if (data == '÷') {
+            getResult()
+            operator = 'divide';
+            calculationScreen.textContent = num1 + ' ÷ ';
+            return
+        };
+
+        if (data == 'x^') {
+            getResult()
+            operator = 'powerOf';
+            calculationScreen.textContent = num1 + '^';
+            return
+        };
+
+        if (data == '=') {
+            calculationScreen.textContent += num2 + ' =';
+            getResult();
+            operator = '';
+            return
+        };
+        
+    } else {
+
+        if (data == '+') {
+            operator = 'sum';
+            calculationScreen.textContent = num1 + ' + ';
+            return
+        };
+    
+        if (data == '-') {
+            operator = 'substract';
+            calculationScreen.textContent = num1 + ' - ';
+            return
+        };
+    
+        if (data == 'x') {
+            operator = 'multiply';
+            calculationScreen.textContent = num1 + ' x ';
+            return
+        };
+    
+        if (data == '÷') {
+            operator = 'divide';
+            calculationScreen.textContent = num1 + ' ÷ ';
+            return
+        };
+    
+        if (data == 'x^') {
+            operator = 'powerOf';
+            calculationScreen.textContent = num1 + '^';
+            return
+        };
+    
+        if (data == 'x!') {
+            operator = 'factorial';
+            calculationScreen.textContent = num1 + '!';
+            return
+        };
+    };
 };
 
 function getResult() {
-    if (currentOperator === 'sumUp') {
-        result = sumUp(num1, num2);
-        printResult()
+    if (operator == 'sum') {
+        result = sum(num1, num2);
     };
 
-    if (currentOperator === 'substract') {
+    if (operator == 'substract') {
         result = substract(num1, num2);
-        printResult()
     };
-    num1 = result;
+
+    if (operator == 'multiply') {
+        result = multiply(num1, num2);
+    };
+
+    if (operator == 'divide') {
+        result = divide(num1, num2);
+    };
+
+    if (operator == 'powerOf') {
+        result = powerOf(num1, num2);
+    };
+
+    if (operator == 'factorial') {
+        result = factorial(num1);
+    };
+    num1 = String(result);
     num2 = '';
+    resultScreen.textContent = result;
 };
 
-function printResult() {
-    resultScreen.textContent = result;
-}
+function clear() {
+    num1 = '';
+    num2 = '';
+    result = '';
+    data = '';
+    operator = '';
+    resultScreen.textContent = '0';
+    calculationScreen.textContent = '';
+};
+
+clear();
