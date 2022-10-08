@@ -15,26 +15,34 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: 20px;
     border: 20px solid black;
     border-radius: 10px;
     background-color: black;
+    width: 360px;
 }
 
 #screen {
     display: flex;
     flex-direction: column;
-    justify-content:center;
+    justify-content: center;
     align-items: flex-end;
     background-color: rgb(80, 0, 155);
     height: 90px;
     border-radius: 10px;
+    width: 350px;
 }
 
 #screen div {
+    display: flex;
+    justify-content: flex-end;
     padding-right: 20px;
     color: rgb(255, 0, 242);
-    height: 30px;
+    height: 40px;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #calculation {
